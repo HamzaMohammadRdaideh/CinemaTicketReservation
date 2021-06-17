@@ -29,4 +29,12 @@ urlpatterns = [
     #using fbv , GET POST from rest framework
     path('rest/fbvlist/', views.fbv_list),
 
+    #using fbv , GET PUT DELETE using PK
+    path('rest/fbvlist/<int:pk>', views.fbv_pk),
+
+    #using cbv , GET POST 
+    path('rest/cbvlist/', views.Cbv_List.as_view()),
+
+    #using cbv , GET PUT DELETE 
+    path('rest/cbvlist/<int:pk>', views.Cbv_pk.as_view()),
 ]
