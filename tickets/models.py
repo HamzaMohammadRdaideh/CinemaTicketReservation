@@ -22,7 +22,3 @@ class Guest(models.Model):
 class Reservation(models.Model):
     guset = models.ForeignKey(Guest, on_delete=models.CASCADE, related_name='reservation')
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reservation')        
-
-
-    def __str__(self):
-        return self.guset
