@@ -37,12 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework.authtoken',
     'tickets',
     'rest_framework',
 ]
 
-# General setting rest framewok
-REST_FRAMEWORK = {}
+# Global setting rest framewok
+# Permissions : AllowAny \\ IsAuthenticated \\ IsAdminuser \\ ISAuthenticatedReadOnly
+
+REST_FRAMEWORK = {                                                     #Password and Email
+#     'DEFAULT_AUTHENTICATION_CLASSES':['rest_framework.authentication.BasicAuthentication'],
+#     'DEFAULT_PERMISSION_CLASSES':['rest_framework.permissions.IsAuthenticated']
+    'DEFAULT_AUTHENTICATION_CLASSES':['rest_framework.authentication.TokenAuthentication'],
+
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

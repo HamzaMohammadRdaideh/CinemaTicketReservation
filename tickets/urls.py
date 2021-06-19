@@ -3,6 +3,7 @@ from django.urls import path
 from django.urls.conf import include
 from tickets import views
 from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import obtain_auth_token
 
 router = DefaultRouter()
 router.register('guests', views.View_sets_guest)
@@ -49,4 +50,10 @@ urlpatterns = [
 
     #New reservation fbv
     path('fbv/newreservation/',views.new_reservation),
+
+    #Rest auth url
+    path('api-auth', include('rest_framework.urls')),
+
+    #TokenAuthentication
+    path('api-token-auth', obtain_auth_token),
 ]

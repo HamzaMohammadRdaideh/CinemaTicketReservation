@@ -1,13 +1,20 @@
 import json
+import re
 from django.shortcuts import render
 from django.http.response import Http404, JsonResponse
+from rest_framework import views
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 from tickets.models import *
 from rest_framework.decorators import api_view
 from tickets.serializers import *
 from rest_framework import status, filters
 from rest_framework.views import APIView
 from django.http import Http404
+from rest_framework import generics, mixins, viewsets
+from rest_framework.parsers import JSONParser
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 # List = Get , Create = Post ,PK query = Get , Update = PUT , Delete or Destroy = Delete
 
 # Extract JSON data without restframework and query model
@@ -130,4 +137,111 @@ class Cbv_pk(APIView):
         guest.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)     
 
-        
+
+#Mixins List                                                             #Response by Api
+class mixins_list(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerilaizer
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        return self.create(request)
+
+
+#Mixins GET PUT DELETE
+class mixins_pk(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerilaizer
+
+    def get(self, request, pk):
+        return self.retrieve(request)
+
+    def put(self, request, pk):
+        return self.update(request)
+
+    def delete(self, request, pk):
+        return self.destroy(request)
+
+
+#Generics GET POST
+class Genericslist(generics.ListCreateAPIView):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerilaizer
+    authentication_classes = [TokenAuthentication]
+
+    # authentication_classes = [BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+#Generics GET PUT DELETE
+class Generics_pk(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerilaizer
+    authentication_classes = [TokenAuthentication]
+
+    # authentication_classes = [BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+#ViewSets 
+class View_sets_guest(viewsets.ModelViewSet):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerilaizer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
+
+
+class View_sets_movie(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerilaizer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['movie']
+
+
+class View_sets_reservation(viewsets.ModelViewSet):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerilaizer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['guest']
+
+# *-----------------------------------------------*
+#Using in Postman only
+#Find Movie by fbv
+@api_view(['GET'])
+def find_movie(request):
+
+    movies = Movie.objects.filter(
+        movie_name = request.data['movie_name'], 
+        hall = request.data['hall'],
+        )
+    serializer = MovieSerilaizer(movies, many = True)
+    return Response(serializer.data)    
+
+#Create new reservation
+@api_view(['POST'])
+def new_reservation(request):
+    
+    movie = Movie.objects.get(
+        movie_name = request.data['movie_name'], 
+        hall = request.data['hall'],
+        )
+    #New guest
+    guest = Guest()
+    guest.name = request.data['name']
+    guest.mobile = request.data['mobile']
+    guest.save()
+
+    reservation = Reservation()
+    reservation.guest = guest
+    reservation.movie = movie
+    reservation.save()
+    
+    serializer = GuestSerilaizer(data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
+
+
+#JWT AUTH TOKEN  

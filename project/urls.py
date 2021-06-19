@@ -16,25 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from tickets import views
-
+from django.urls.conf import include
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    #without rest
-    path('django/basicjson/', views.without_restframework),
-
-    #using query 
-    path('django/query/', views.by_model),
-
-    #using fbv , GET POST from rest framework
-    path('rest/fbvlist/', views.fbv_list),
-
-    #using fbv , GET PUT DELETE using PK
-    path('rest/fbvlist/<int:pk>', views.fbv_pk),
-
-    #using cbv , GET POST 
-    path('rest/cbvlist/', views.Cbv_List.as_view()),
-
-    #using cbv , GET PUT DELETE 
-    path('rest/cbvlist/<int:pk>', views.Cbv_pk.as_view()),
+    path('', include('tickets.urls')),
 ]
