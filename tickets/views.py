@@ -1,5 +1,5 @@
 import json
-import re
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.http.response import Http404, JsonResponse
 from rest_framework import views
@@ -15,6 +15,8 @@ from rest_framework import generics, mixins, viewsets
 from rest_framework.parsers import JSONParser
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from .permissions import *
+
 # List = Get , Create = Post ,PK query = Get , Update = PUT , Delete or Destroy = Delete
 
 # Extract JSON data without restframework and query model
@@ -242,6 +244,12 @@ def new_reservation(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
+
+#Post author editor
+class Post_pk(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthorOrReadOnly]
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
 
 #JWT AUTH TOKEN  

@@ -56,4 +56,7 @@ urlpatterns = [
 
     #TokenAuthentication
     path('api-token-auth', obtain_auth_token),
+
+    #PostEditors
+    path('post/genericlist/<int:pk>', views.Post_pk.as_view()),
 ]

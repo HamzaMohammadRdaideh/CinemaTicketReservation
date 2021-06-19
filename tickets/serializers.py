@@ -23,3 +23,8 @@ class GuestSerilaizer(serializers.ModelSerializer):
     class Meta:
         model = Guest
         fields = '__all__'        
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = '__all__'
