@@ -115,18 +115,18 @@ class Cbv_List(APIView):
 # GET PUT DELETE
 class Cbv_pk(APIView):
 
-    def get_object(self, pk):
+    def get_object(self, pk): # static name function
         try:
             return Guest.objects.get(pk =pk)
         except Guest.DoesNotExist:
             raise Http404    
 
-    def get(self, request, pk):
+    def get(self, request, pk): # static name function
         guest = self.get_object(pk)
         serializer = GuestSerilaizer(guest)
         return Response(serializer.data)
 
-    def put(self, request, pk):    
+    def put(self, request, pk): # static name function
         guest = self.get_object(pk)
         serializer = GuestSerilaizer(guest, data=request.data)
         if serializer.is_valid():
@@ -134,7 +134,7 @@ class Cbv_pk(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def delete(self, request, pk): # static name function
         guest = self.get_object(pk)
         guest.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)     
@@ -142,8 +142,8 @@ class Cbv_pk(APIView):
 
 #Mixins List                                                             #Response by Api
 class mixins_list(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-    queryset = Guest.objects.all()
-    serializer_class = GuestSerilaizer
+    queryset = Guest.objects.all() # static name queryset
+    serializer_class = GuestSerilaizer # static name serializer_class
 
     def get(self, request):
         return self.list(request)
@@ -154,8 +154,8 @@ class mixins_list(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gener
 
 #Mixins GET PUT DELETE
 class mixins_pk(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
-    queryset = Guest.objects.all()
-    serializer_class = GuestSerilaizer
+    queryset = Guest.objects.all() # static name queryset
+    serializer_class = GuestSerilaizer # static name serializer_class
 
     def get(self, request, pk):
         return self.retrieve(request)
