@@ -218,7 +218,7 @@ def find_movie(request):
         )
     serializer = MovieSerilaizer(movies, many = True)
     return Response(serializer.data)    
-
+# *-----------------------------------------------*
 #Create new reservation
 @api_view(['POST'])
 def new_reservation(request):
@@ -244,7 +244,7 @@ def new_reservation(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
-
+# *-----------------------------------------------*
 #Post author editor
 class Post_pk(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthorOrReadOnly]
